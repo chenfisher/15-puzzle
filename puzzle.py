@@ -4,16 +4,22 @@ import argparse
 import math
 import readchar
 import random
+import solver
+#from solver import *
+import numpy as np
 
 class Board:
-    def __init__(self, size=16):
+    def __init__(self, dim=4):
+	size = dim * dim
         self.rows = self.cols = int(math.sqrt(size))
         self.blocks = [str(i+1) for i in range(size)]
         self.blocks[size-1] = ""
         self.blank = size - 1
 
+	self.solver = solver.Solver(dim)
+
     def show(self):
-        # os.system('clear')
+        os.system('clear')
         sys.stdout.write("\033[F"*self.rows*2)
 
         for r in range(self.rows):
@@ -72,9 +78,20 @@ class Board:
         for i in range(n):
             random.choice(moves)()
 
+    def solve(self):
+	array = np.array([int(s) if s else 0 for s in self.blocks])
+        empty_spot = self.blocks.index("")
+        came_from, cost = self.solver.solve(solver.State(array, empty_spot))
+        print "path:"
+        for state in came_from:
+            print state
+        print "cost = ", cost
+        wait = raw_input("PRESS ENTER TO CONTINUE.")
+
+
 class Game:
-    def __init__(self, size=16):
-        self.board = Board(size)
+    def __init__(self, dim=4):
+        self.board = Board(dim)
 
     def run(self):
         left = ''.join(chr(x) for x in [27, 91, 68])
@@ -92,7 +109,8 @@ class Game:
                 'j': self.board.move_down,
                 'k': self.board.move_up,
                 'p': self.board.show,
-                's': lambda: self.board.shuffle(1000)
+                's': lambda: self.board.shuffle(1000),
+                'x': self.board.solve
                 }
 
         self.board.show()
@@ -109,10 +127,11 @@ os.system('clear')
 
 # get size from arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-s", "--size", default=16, help="size of the board. board is always square so rows == columns == sqrt(size)")
+parser.add_argument("-s", "--dim", default=4, help="dimension of the board, num_rows == num_columns == dim")
 args = parser.parse_args()
 
 # init the game and run
-game = Game(size=int(args.size))
+game = Game(dim=int(args.dim))
 
 game.run()
+
