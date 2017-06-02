@@ -1,6 +1,8 @@
 import numpy as np
-from search import a_star_search
+import math
+from search import a_star_iterative_deepening
 
+ 
 class State(object):
 	def __init__(self, array, empty_spot):
 		self.array = array
@@ -12,7 +14,11 @@ class State(object):
 		return State(array, new_empty_spot)
 
 	def __str__(self):
-		return str(self.array) + ", " + str(self.empty_spot)
+		array_copy = np.array(self.array)
+		array_copy[self.empty_spot] = 0
+		dim = int(math.sqrt(len(self.array)))
+		return str(array_copy.reshape((dim, dim)))
+
 
 class GameGraph(object):
 	def __init__(self, dim):
@@ -54,6 +60,8 @@ class Solver(object):
 	def __init__(self, dim):
 		self._graph = GameGraph(dim)
 
-	def solve(self, start_state):
-		return a_star_search(self._graph, start_state)
+	def solve(self, start_state, max_depth=100):
+		return a_star_iterative_deepening(self._graph, start_state, max_depth)
+#		return a_star_iterative_deepening(self._graph, start_state, max_depth)
+
 

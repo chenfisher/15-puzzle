@@ -80,11 +80,11 @@ class Board:
     def solve(self):
 	array = np.array([int(s) if s else 0 for s in self.blocks])
         empty_spot = self.blocks.index("")
-        came_from, cost = self.solver.solve(solver.State(array, empty_spot))
-        print "path:"
-        for state in came_from:
-            print state
+        cost, path = self.solver.solve(solver.State(array, empty_spot))
         print "cost = ", cost
+        print "path:"
+        for state in path:
+            print state
         wait = raw_input("PRESS ENTER TO CONTINUE.")
 
 
