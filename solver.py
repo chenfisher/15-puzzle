@@ -19,6 +19,11 @@ class State(object):
 		dim = int(math.sqrt(len(self.array)))
 		return str(array_copy.reshape((dim, dim)))
 
+	def __eq__(self, other):
+		self.array[self.empty_spot] = 0
+		other.array[other.empty_spot] = 0
+		return np.all(self.array == other.array)
+
 
 class GameGraph(object):
 	def __init__(self, dim):
