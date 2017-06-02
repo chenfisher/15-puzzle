@@ -57,14 +57,3 @@ class Solver(object):
 	def solve(self, start_state):
 		return a_star_search(self._graph, start_state)
 
-
-def main():
-	graph = GameGraph(4)
-	print graph._calc_neighbors(0)
-	print graph._calc_neighbors(1)
-	print graph._calc_neighbors(2)
-	print graph._calc_neighbors(5)
-
-
-main()
-

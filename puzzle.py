@@ -5,7 +5,6 @@ import math
 import readchar
 import random
 import solver
-#from solver import *
 import numpy as np
 
 class Board:
