@@ -5,10 +5,12 @@ import math
 import readchar
 import random
 import solver
+import cProfile
 import numpy as np
 
+
 class Board:
-    def __init__(self, dim=4):
+    def __init__(self, dim=4, profile=0):
 	size = dim * dim
         self.rows = self.cols = int(math.sqrt(size))
         self.blocks = [str(i+1) for i in range(size)]
@@ -16,6 +18,7 @@ class Board:
         self.blank = size - 1
 
 	self.solver = solver.Solver(dim)
+        self.profile = profile
 
     def show(self):
         os.system('clear')
@@ -80,7 +83,14 @@ class Board:
     def solve(self):
 	array = np.array([int(s) if s else 0 for s in self.blocks])
         empty_spot = self.blocks.index("")
-        cost, path = self.solver.solve(solver.State(array, empty_spot))
+
+        if self.profile:
+            prof = cProfile.Profile()
+            cost, path = prof.runcall(self.solver.solve, solver.State(array, empty_spot))
+            prof.dump_stats('search.prof')
+        else:
+            cost, path = self.solver.solve(solver.State(array, empty_spot))
+
         print "cost = ", cost
         print "path:"
         for state in path:
@@ -89,8 +99,8 @@ class Board:
 
 
 class Game:
-    def __init__(self, dim=4):
-        self.board = Board(dim)
+    def __init__(self, dim=4, profile=0):
+        self.board = Board(dim, profile)
 
     def run(self):
         left = ''.join(chr(x) for x in [27, 91, 68])
@@ -126,11 +136,12 @@ os.system('clear')
 
 # get size from arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-s", "--dim", default=4, help="dimension of the board, num_rows == num_columns == dim")
+parser.add_argument("-d", "--dim", default=4, help="dimension of the board, num_rows == num_columns == dim")
+parser.add_argument("-p", "--profile", default=0, help="profiler flag")
 args = parser.parse_args()
 
 # init the game and run
-game = Game(dim=int(args.dim))
+game = Game(dim=int(args.dim), profile=args.profile)
 
 game.run()
 
