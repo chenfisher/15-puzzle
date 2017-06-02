@@ -62,6 +62,4 @@ class Solver(object):
 
 	def solve(self, start_state, max_depth=100):
 		return a_star_iterative_deepening(self._graph, start_state, max_depth)
-#		return a_star_iterative_deepening(self._graph, start_state, max_depth)
-
 
