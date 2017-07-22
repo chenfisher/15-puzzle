@@ -53,7 +53,7 @@ def a_star_search(graph, start, max_cost=np.inf):
 
 
 def get_path(came_from, current):
-    path = []
+    path = [current]
     while True:
         prev = came_from[current]
         if not prev:
